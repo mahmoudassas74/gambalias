@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الجمبلياص</title><meta name="description" content="لعبة قعدة أونلاين: واحد فيكم هو الجمبلياص.. اكشفوه."><meta property="og:title" content="الجمبلياص"><meta property="og:description" content="واحد فيكم هو الجمبلياص.. اكشفوه قبل ما يطلّعكم واحد ورا التاني."><meta name="theme-color" content="#0c0806"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}html,body{margin:0;background:#0c0806}[hidden]{display:none!important}</style></head><body><title>الجمبلياص</title>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>الجمبلياص</title><meta name="description" content="لعبة قعدة أونلاين: واحد فيكم هو الجمبلياص.. اكشفوه."><meta property="og:title" content="الجمبلياص"><meta property="og:description" content="واحد فيكم هو الجمبلياص.. اكشفوه قبل ما يطلّعكم واحد ورا التاني."><meta name="theme-color" content="#0c0806"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="preconnect" href="https://broker.emqx.io"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}html,body{margin:0;background:#0c0806}[hidden]{display:none!important}</style></head><body><title>الجمبلياص</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Baloo+Bhaijaan+2:wght@500;700;800&family=Rakkas&display=swap">
@@ -155,6 +155,16 @@ img.medal{object-fit:contain;display:block}
 .micbtn svg{width:26px;height:26px}
 .vmic{position:absolute;left:14px;bottom:92px;z-index:46;width:64px;height:64px;border-radius:50%;border:3px solid #000;background:var(--teal);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:0 5px 0 #000;cursor:pointer;padding:0}
 .vmic[hidden]{display:none}
+.vaud{position:absolute;left:24px;bottom:166px;z-index:46;width:44px;height:44px;border-radius:50%;border:3px solid #000;background:var(--ink3);color:var(--paper);display:grid;place-items:center;box-shadow:0 4px 0 #000;cursor:pointer;padding:0}
+.vaud[hidden]{display:none}.vaud svg{width:20px;height:20px}
+.audbtn{width:54px;height:54px;border-radius:50%}
+.aud-card{max-width:430px;align-items:stretch;text-align:right;gap:8px}
+.aud-card h2{text-align:center;font-size:30px;font-family:var(--f-body);font-weight:800}
+.aud-l{font-weight:800;font-size:15px;color:var(--ink);margin-top:6px}
+.aud-sel{width:100%;min-height:48px;border:3px solid #000;border-radius:10px;background:#FFF8E6;color:var(--ink);font:inherit;font-weight:700;font-size:15px;padding:0 10px;cursor:pointer}
+.aud-meter{height:14px;border:2px solid #000;border-radius:999px;background:#d9c9a3;overflow:hidden}
+.aud-meter i{display:block;height:100%;width:0;background:#3BD16F;transition:width .08s}
+.aud-card .aud-note{font-size:13px;line-height:1.5;margin:0}
 .vmic svg{width:22px;height:22px}
 .vmic small{font-size:9.5px;font-weight:800;line-height:1;white-space:nowrap}
 .vmic.off{background:var(--mustard);color:var(--ink)}
@@ -908,6 +918,7 @@ img.medal{object-fit:contain;display:block}
     </div>
     <div class="foot">
       <button class="micbtn" type="button" id="micBtn" aria-label="اقفل المايك"></button>
+      <button class="iconbtn audbtn" type="button" id="audBtn" aria-label="اختار المايك والسماعة" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="7" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="7" rx="1.5"/></svg></button>
       <button class="btn block" type="button" id="startBtn" disabled>مستنيين الكل…</button>
     </div>
   </section>
@@ -1078,6 +1089,21 @@ img.medal{object-fit:contain;display:block}
   <div id="toast" role="status"></div>
   <div id="netBanner" role="status" hidden></div>
   <button class="vmic off" type="button" id="vmic" aria-label="الفويس" hidden></button>
+  <button class="vaud" type="button" id="vaud" aria-label="اختار المايك والسماعة" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="7" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="7" rx="1.5"/></svg></button>
+  <div class="modal" id="audio" hidden>
+    <div class="paper intro-card aud-card">
+      <h2 class="display">المايك والسماعة</h2>
+      <label class="aud-l" for="selMic">المايك اللي بتتكلم فيه</label>
+      <select id="selMic" class="aud-sel"></select>
+      <div class="aud-meter" aria-hidden="true"><i id="audLv"></i></div>
+      <p class="aud-note">اتكلم، والشريط الأخضر لازم يتحرك.</p>
+      <label class="aud-l" for="selOut">السماعة اللي بتسمع منها</label>
+      <select id="selOut" class="aud-sel"></select>
+      <p class="aud-note" id="outNote"></p>
+      <button class="btn ghost block" type="button" id="audTest">جرّب السماعة</button>
+      <button class="btn block" type="button" id="audOk">تمام</button>
+    </div>
+  </div>
   <div class="modal" id="offline" hidden>
     <div class="paper intro-card">
       <h2 class="display">الأونلاين مش شغال هنا</h2>
@@ -2270,48 +2296,68 @@ const NET={ns:'gambalias-eg7/',brokers:(window.JB_BROKERS||['wss://broker.emqx.i
   libs:['https://cdn.jsdelivr.net/npm/mqtt@5.10.1/dist/mqtt.min.js','https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js']};
 function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.async=true;s.onload=res;s.onerror=rej;document.head.appendChild(s)})}
 async function mqttLib(){if(window.mqtt)return window.mqtt;for(const u of NET.libs){try{await loadScript(u);if(window.mqtt)return window.mqtt}catch(e){}}return null}
-const MQ={
+const MQ={client:null,conn:false,rooms:{},ready:null,chs:new Set(),
+  /* one connection for the whole visit, opened early so making / joining a room is instant */
+  init(){
+    if(this.ready)return this.ready;
+    this.ready=(async()=>{
+      const lib=await mqttLib();if(!lib){this.ready=null;return false}
+      for(const url of NET.brokers){
+        const c=lib.connect(url,{clientId:'jb_'+ON.cid+'_'+Math.random().toString(36).slice(2,7),clean:true,keepalive:20,reconnectPeriod:2000,connectTimeout:8000,
+          will:{topic:NET.ns+'w/'+ON.cid,payload:'x',retain:false,qos:1}});
+        const ok=await new Promise(res=>{const to=setTimeout(()=>res(false),9000);c.once('connect',()=>{clearTimeout(to);res(true)})});
+        if(!ok){try{c.end(true)}catch(e){}continue}
+        this.client=c;
+        c.on('connect',()=>{c.subscribe(NET.ns+'w/+',{qos:1});Object.values(this.rooms).forEach(r=>r._resub());this.setConn(true)});
+        c.on('close',()=>this.setConn(false));c.on('offline',()=>this.setConn(false));
+        c.on('message',(t,b,pk)=>{
+          if(t.startsWith(NET.ns+'w/')){const id=t.slice((NET.ns+'w/').length);Object.values(this.rooms).forEach(r=>r._gone(id));return}
+          Object.values(this.rooms).forEach(r=>r._msg(t,b,!!(pk&&pk.retain)))});
+        c.subscribe(NET.ns+'w/+',{qos:1});this.setConn(true);
+        return true;
+      }
+      this.ready=null;return false;
+    })();
+    return this.ready;
+  },
+  setConn(v){if(this.conn===v)return;this.conn=v;this.chs.forEach(h=>{try{h(v)}catch(e){}})},
   async join(name){
-    const lib=await mqttLib();if(!lib)throw {code:'upstream_error',message:'no lib'};
-    const me=ON.cid,base=NET.ns+name+'/',pTopic=base+'p/'+me,sTopic=base+'s/'+me;
-    const peers=new Map(),ph=new Set(),chs=new Set();let mine={},conn=false,client=null,sched=false,left=false,cache=null,sigH=null,pt=0;
+    if(!await this.init())throw {code:'upstream_error',message:'no broker'};
+    if(this.rooms[name])return this.rooms[name].api;
+    const client=this.client,me=ON.cid,base=NET.ns+name+'/',pTopic=base+'p/'+me,sTopic=base+'s/'+me,M=this;
+    const peers=new Map(),ph=new Set(),chs=new Set();let mine={},sched=false,left=false,cache=null,sigH=null,pt=0;
     const snap=()=>[...peers.entries()].map(([peer,v])=>Object.freeze({peer,by:null,isMe:peer===me,sameTab:peer===me,kind:'viewer',guest:false,presence:v.p,updatedAt:v.u}));
     const notify=()=>{cache=null;if(sched)return;sched=true;setTimeout(()=>{sched=false;const ps=api.peers();ph.forEach(h=>{try{h({peers:ps,joined:[],left:[],updated:[]})}catch(e){console.warn(e)}})},30)};
-    const pub=()=>{if(!client||left||!conn)return;client.publish(pTopic,JSON.stringify({p:mine,_t:Date.now()}),{retain:true,qos:1})};
-    const setConn=v=>{if(conn===v)return;conn=v;chs.forEach(h=>{try{h(v)}catch(e){}})};
-    for(const url of NET.brokers){
-      const c=lib.connect(url,{clientId:'jb_'+me+'_'+Math.random().toString(36).slice(2,7),clean:true,keepalive:20,reconnectPeriod:2500,connectTimeout:8000,
-        will:{topic:pTopic,payload:'',retain:true,qos:1}});
-      const ok=await new Promise(res=>{const to=setTimeout(()=>res(false),9000);c.once('connect',()=>{clearTimeout(to);res(true)})});
-      if(ok){client=c;break}
-      try{c.end(true)}catch(e){}
-    }
-    if(!client)throw {code:'upstream_error',message:'no broker'};
-    const onConnect=()=>{client.subscribe([base+'p/+',sTopic],{qos:1});setConn(true);if(Object.keys(mine).length)pub()};
-    client.on('connect',onConnect);client.on('close',()=>setConn(false));client.on('offline',()=>setConn(false));
-    client.on('message',(topic,buf)=>{
-      if(topic===sTopic){try{const m=JSON.parse(buf.toString());if(sigH&&m&&typeof m.f==='string')sigH(m)}catch(e){}return}
-      const id=topic.slice((base+'p/').length);if(!id||id===me)return;
-      const s=buf.toString();if(!s){if(peers.delete(id))notify();return}
-      try{const o=JSON.parse(s);if(!o||typeof o!=='object'||!o.p||typeof o.p!=='object')return;
-        if(typeof o._t==='number'&&Date.now()-o._t>120000)return;  /* left-over from someone long gone */
-        peers.set(id,{p:Object.freeze(o.p),u:Date.now(),seen:Date.now()});notify()}catch(e){}
-    });
-    const hb=setInterval(pub,15000);
-    const sweep=setInterval(()=>{const now=Date.now();let ch=false;peers.forEach((v,k)=>{if(k!==me&&now-v.seen>50000){peers.delete(k);ch=true}});if(ch)notify()},5000);
+    const pub=()=>{if(left||!M.conn)return;client.publish(pTopic,JSON.stringify({p:mine,_t:Date.now()}),{retain:true,qos:1})};
+    const r={
+      _resub(){client.subscribe([base+'p/+',sTopic],{qos:1});pub()},
+      _gone(id){if(id!==me&&peers.delete(id))notify()},
+      _msg(topic,buf,retained){
+        if(topic===sTopic){try{const m=JSON.parse(buf.toString());if(sigH&&m&&typeof m.f==='string')sigH(m)}catch(e){}return}
+        if(!topic.startsWith(base+'p/'))return;
+        const id=topic.slice((base+'p/').length);if(!id||id===me)return;
+        const s=buf.toString();if(!s){if(peers.delete(id))notify();return}
+        try{const o=JSON.parse(s);if(!o||typeof o!=='object'||!o.p||typeof o.p!=='object')return;
+          if(retained&&typeof o._t==='number'&&Date.now()-o._t>45000)return;  /* a stored left-over from someone who dropped */
+          peers.set(id,{p:Object.freeze(o.p),u:Date.now(),seen:Date.now()});notify()}catch(e){}
+      }
+    };
+    const hb=setInterval(pub,12000);
+    const sweep=setInterval(()=>{const now=Date.now();let ch=false;peers.forEach((v,k)=>{if(k!==me&&now-v.seen>40000){peers.delete(k);ch=true}});if(ch)notify()},4000);
+    const offConn=(h=>{M.chs.add(h);return()=>M.chs.delete(h)})(v=>chs.forEach(h=>{try{h(v)}catch(e){}}));
     const api={name,
       presence:async patch=>{if(left)throw {code:'invalid_argument'};for(const k in patch){if(patch[k]===null)delete mine[k];else mine[k]=JSON.parse(JSON.stringify(patch[k]))}
-        peers.set(me,{p:Object.freeze({...mine}),u:Date.now(),seen:Date.now()});notify();if(!pt)pt=setTimeout(()=>{pt=0;pub()},50)},
+        peers.set(me,{p:Object.freeze({...mine}),u:Date.now(),seen:Date.now()});notify();if(!pt)pt=setTimeout(()=>{pt=0;pub()},40)},
       peers:()=>cache||(cache=snap()),
       onPeers:h=>{ph.add(h);notify();return()=>ph.delete(h)},
-      connected:()=>conn,
-      onConnection:h=>{chs.add(h);setTimeout(()=>h(conn),0);return()=>chs.delete(h)},
+      connected:()=>M.conn,
+      onConnection:h=>{chs.add(h);setTimeout(()=>h(M.conn),0);return()=>chs.delete(h)},
       emit:async()=>{},on:()=>()=>{},
-      sig:{send(to,msg){if(client&&conn&&!left)client.publish(base+'s/'+to,JSON.stringify({...msg,f:me}),{qos:1})},on(h){sigH=h}},
-      leave:async()=>{if(left)return;left=true;clearInterval(hb);clearInterval(sweep);ph.clear();chs.clear();
-        try{client.publish(pTopic,'',{retain:true,qos:1});await new Promise(r=>setTimeout(r,300));client.end(false)}catch(e){}}
+      sig:{send(to,msg){if(M.conn&&!left)client.publish(base+'s/'+to,JSON.stringify({...msg,f:me}),{qos:1})},on(h){sigH=h}},
+      leave:async()=>{if(left)return;left=true;clearInterval(hb);clearInterval(sweep);offConn();ph.clear();chs.clear();delete M.rooms[name];
+        try{client.publish(pTopic,'',{retain:true,qos:1});client.unsubscribe([base+'p/+',sTopic])}catch(e){}}
     };
-    onConnect();
+    r.api=api;this.rooms[name]=r;r._resub();
     return api;
   }
 };
@@ -2319,12 +2365,12 @@ const MQ={
    VO: voice inside the game (browser rooms only). Everyone talks to
    everyone directly (WebRTC); the game decides whose mic is open.
    ===================================================================== */
-const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,speak:{},
+const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,speak:{},micId:LS.get('jb-mic','')||'',outId:LS.get('jb-out','')||'',
   ice:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}],
   can:()=>!!(ON.nr&&ON.nr.sig&&navigator.mediaDevices&&window.RTCPeerConnection),
   async start(){
     if(this.stream)return true;
-    try{this.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}
+    try{this.stream=await navigator.mediaDevices.getUserMedia({audio:this.cons(this.micId,false)})}
     catch(e){toast('المايك مش شغال.. اسمح للمتصفح يستخدم المايك');return false}
     this.muted=false;this.watch(ON.cid,this.stream);if(ON.nr)ON.nr.presence({vc:1}).catch(()=>{});
     this.sync(ON.peers||[]);this.apply();return true;
@@ -2342,7 +2388,7 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,sp
     const pc=new RTCPeerConnection({iceServers:this.ice});pc._q=[];this.pcs[c]=pc;this.st[c]='new';
     this.stream.getTracks().forEach(t=>pc.addTrack(t,this.stream));
     pc.onicecandidate=e=>{if(e.candidate)ON.nr.sig.send(c,{t:'ice',c:e.candidate.toJSON()})};
-    pc.ontrack=e=>{let a=this.auds[c];if(!a){a=document.createElement('audio');a.autoplay=true;a.playsInline=true;document.body.appendChild(a);this.auds[c]=a}a.srcObject=e.streams[0];a.play().catch(()=>{});this.watch(c,e.streams[0]);this.apply()};
+    pc.ontrack=e=>{let a=this.auds[c];if(!a){a=document.createElement('audio');a.autoplay=true;a.playsInline=true;document.body.appendChild(a);this.auds[c]=a;if(this.outId&&a.setSinkId)a.setSinkId(this.outId).catch(()=>{})}a.srcObject=e.streams[0];a.play().catch(()=>{});this.watch(c,e.streams[0]);this.apply()};
     pc.onconnectionstatechange=()=>{if(this.pcs[c]!==pc)return;this.st[c]=pc.connectionState;this.decorate();
       if(pc.connectionState==='failed'){this.close(c);const n=this.tries[c]=(this.tries[c]||0)+1;if(n<4&&ON.cid<c)setTimeout(()=>{if(this.stream&&!this.pcs[c])this.call(c)},2500*n)}};
     return pc;
@@ -2356,6 +2402,41 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,sp
       else if(m.t==='answer'&&m.d){const pc=this.pcs[c];if(pc&&pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(m.d);pc._q.splice(0).forEach(x=>pc.addIceCandidate(x).catch(()=>{}))}}
       else if(m.t==='ice'&&m.c){const pc=this.pcs[c];if(!pc)return;if(pc.remoteDescription)await pc.addIceCandidate(m.c);else pc._q.push(m.c)}
     }catch(e){console.warn('sig',e)}
+  },
+  /* picking the mic and the speaker from inside the game */
+  cons(id,exact){const c={echoCancellation:true,noiseSuppression:true,autoGainControl:true};if(id&&id!=='default')c.deviceId=exact?{exact:id}:{ideal:id};return c},
+  canOut:()=>typeof HTMLMediaElement!=='undefined'&&'setSinkId' in HTMLMediaElement.prototype,
+  async setMic(id){
+    let ns;try{ns=await navigator.mediaDevices.getUserMedia({audio:this.cons(id,true)})}catch(e){toast('مش قادر أفتح المايك ده');return false}
+    const nt=ns.getAudioTracks()[0];
+    Object.values(this.pcs).forEach(pc=>pc.getSenders().forEach(sd=>{if(sd.track&&sd.track.kind==='audio')sd.replaceTrack(nt).catch(()=>{})}));
+    if(this.stream)this.stream.getTracks().forEach(t=>t.stop());
+    this.stream=ns;this.micId=id;LS.set('jb-mic',id);this.watch(ON.cid,ns);this.apply();return true;
+  },
+  async setOut(id){this.outId=id;LS.set('jb-out',id);for(const c in this.auds){const a=this.auds[c];if(a.setSinkId)a.setSinkId(id).catch(()=>{})}},
+  async fill(){
+    let ds=[];try{ds=await navigator.mediaDevices.enumerateDevices()}catch(e){}
+    const mics=ds.filter(d=>d.kind==='audioinput'),outs=ds.filter(d=>d.kind==='audiooutput');
+    const curMic=(this.stream&&this.stream.getAudioTracks()[0]&&this.stream.getAudioTracks()[0].getSettings().deviceId)||this.micId;
+    const opt=(d,i,w,cur)=>`<option value="${clean(d.deviceId,200)}"${d.deviceId===cur?' selected':''}>${clean(d.label,60)||(w+' '+toAr(i+1))}</option>`;
+    $('#selMic').innerHTML=mics.length?mics.map((d,i)=>opt(d,i,'مايك',curMic)).join(''):'<option value="">مفيش مايك متوصّل</option>';
+    const so=$('#selOut');
+    if(this.canOut()&&outs.length){so.disabled=false;so.innerHTML=outs.map((d,i)=>opt(d,i,'سماعة',this.outId||'default')).join('');$('#outNote').textContent=''}
+    else{so.disabled=true;so.innerHTML='<option>سماعة الجهاز</option>';$('#outNote').textContent='المتصفح ده مش بيسمح تختار السماعة من جوه اللعبة. جرّب Chrome أو Edge على الكمبيوتر.'}
+  },
+  async openSettings(){
+    Sfx.click();const m=$('#audio');m.hidden=false;
+    gsap.fromTo('#audio .aud-card',{scale:.5,opacity:0,rotation:-6},{scale:1,opacity:1,rotation:-1,duration:.45,ease:'back.out(1.8)'});
+    if(!this.stream)await this.start();
+    await this.fill();
+    clearInterval(this.lvT);this.lvT=setInterval(()=>{if(m.hidden){clearInterval(this.lvT);return}const o=this.an[ON.cid];if(o&&!G.online)this.meter();$('#audLv').style.width=Math.round((o?Math.min(1,o.lv*1.6):0)*100)+'%'},90);
+  },
+  testOut(){
+    const sr=22050,n=Math.floor(sr*.7),buf=new ArrayBuffer(44+n*2),v=new DataView(buf),w=(o,str)=>{for(let i=0;i<str.length;i++)v.setUint8(o+i,str.charCodeAt(i))};
+    w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+    for(let i=0;i<n;i++){const t=i/sr,f=t<.35?660:880,e=Math.min(1,t*40)*Math.min(1,(.7-t)*12)*(t<.33||t>.37?1:0);v.setInt16(44+i*2,Math.sin(2*Math.PI*f*t)*e*9000,true)}
+    const a=new Audio(URL.createObjectURL(new Blob([buf],{type:'audio/wav'})));
+    const go=()=>a.play().catch(()=>{});if(this.outId&&a.setSinkId)a.setSinkId(this.outId).then(go,go);else go();
   },
   /* who is actually talking: measure the sound of each voice */
   watch(c,stream){try{this.unwatch(c);if(!this.ac)this.ac=new (window.AudioContext||window.webkitAudioContext)();if(this.ac.state==='suspended')this.ac.resume();
@@ -2396,11 +2477,11 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,sp
     for(const c in this.auds)this.auds[c].muted=!this.allowed(c);
     const b=$('#vmic');
     if(b){const show=G.online&&this.can()&&!isRoom()&&current&&!['s-title','s-join','s-code','s-lobby'].includes(current.id);
-      b.hidden=!show;
+      b.hidden=!show;$('#vaud').hidden=!show;
       if(show){b.className='vmic'+(!on?' off':this.muted?' muted':!mayTalk?' wait':'');
         b.innerHTML=(open?ICON_MIC:ICON_MIC_OFF)+`<small>${!on?'شغّل الفويس':this.muted?'مقفول':!mayTalk?'مش دورك':'مفتوح'}</small>`}}
     const lb=$('#micBtn');
-    if(lb&&G.online&&current&&current.id==='s-lobby'){const vis=this.can()&&!isRoom();lb.hidden=!vis;if(vis){lb.innerHTML=open?ICON_MIC:ICON_MIC_OFF;lb.classList.toggle('off',!open);lb.setAttribute('aria-label',!on?'شغّل الفويس':open?'اقفل المايك':'افتح المايك')}}
+    if(lb&&G.online&&current&&current.id==='s-lobby'){const vis=this.can()&&!isRoom();lb.hidden=!vis;$('#audBtn').hidden=!vis;if(vis){lb.innerHTML=open?ICON_MIC:ICON_MIC_OFF;lb.classList.toggle('off',!open);lb.setAttribute('aria-label',!on?'شغّل الفويس':open?'اقفل المايك':'افتح المايك')}}
   },
   async toggle(){Sfx.click();if(!this.stream){if(await this.start())toast('الفويس اشتغل');return}this.muted=!this.muted;this.apply()},
   decorate(){
@@ -2427,7 +2508,7 @@ ON.inGame=()=>!!(ON.st&&ON.st.ph!=='lobby'&&(ON.st.gf===ON.cid||ON.st.pl.some(e=
 (async()=>{
   try{await CR.gen()}catch(e){CR.ok=false}
   try{if(window.claude&&typeof window.claude.use==='function')ON.room=await window.claude.use('room')}catch(e){ON.room=null}
-  ON.via=ON.room?'claude':'web';if(!ON.room)ON.room=MQ;
+  ON.via=ON.room?'claude':'web';if(!ON.room){ON.room=MQ;setTimeout(()=>MQ.init(),400)}
   ON.ready=true;titleOnline();
 })();
 function noRoomMsg(){
@@ -2435,6 +2516,12 @@ function noRoomMsg(){
   gsap.fromTo('#offline .intro-card',{scale:.4,opacity:0,rotation:-8},{scale:1,opacity:1,rotation:0,duration:.5,ease:'back.out(1.8)'});
 }
 $('#vmic').onclick=()=>VO.toggle();
+$('#vaud').onclick=()=>VO.openSettings();$('#audBtn').onclick=()=>VO.openSettings();
+$('#selMic').onchange=async e=>{if(await VO.setMic(e.target.value))toast('المايك اتغيّر')};
+$('#selOut').onchange=e=>{VO.setOut(e.target.value);VO.testOut()};
+$('#audTest').onclick=()=>VO.testOut();
+$('#audOk').onclick=()=>{Sfx.click();$('#audio').hidden=true};
+try{navigator.mediaDevices.addEventListener('devicechange',()=>{if(!$('#audio').hidden)VO.fill()})}catch(e){}
 $('#offDemo').onclick=()=>{$('#offline').hidden=true;startDemo()};
 $('#offClose').onclick=()=>{$('#offline').hidden=true};
 ON.enter=async(code,asHost)=>{
@@ -2460,22 +2547,20 @@ ON.lost=()=>{if(!G.online)return;ON.connected=false;ON.netUI()};
 ON.create=async()=>{
   const b=$('#joinGo');b.disabled=true;b.textContent='بنفتح الروم…';
   let ok=false;
-  for(let tries=0;tries<3&&!ok;tries++){
-    const code=genCode();
-    if(!await ON.enter(code,true))break;
-    await wait(1200);
-    const other=ON.peers.find(p=>!p.isMe&&p.presence&&p.presence.host===1);
-    if(other){await ON.leave(false);continue}
-    ok=true;H.init(code);
-  }
+  const code=genCode();
+  if(await ON.enter(code,true)){ok=true;H.init(code);
+    /* a code clash is one in a million: if it happens, quietly open another room */
+    setTimeout(async()=>{if(!ON.host||ON.code!==code||(H.st&&H.st.pl.length>1))return;
+      if(ON.peers.some(p=>!p.isMe&&p.presence&&p.presence.host===1)){await ON.leave(true);go('join');setTimeout(()=>ON.create(),900)}},1500)}
   b.disabled=false;b.textContent='اعمل الروم';
 };
 ON.joinCode=async(code)=>{
   const b=$('#codeGo');b.disabled=true;b.textContent='بندوّر على الروم…';$('#codeErr').textContent='';
   const done=()=>{b.disabled=false;b.textContent='ادخل'};
   if(!await ON.enter(code,false)){done();return}
+  b.textContent='بندخل…';
   const t0=Date.now();
-  while(Date.now()-t0<7000&&!ON.st)await wait(250);
+  while(Date.now()-t0<7000&&!ON.st)await wait(100);
   done();
   if(!ON.st){$('#codeErr').textContent='مفيش روم مفتوح بالكود ده. اتأكد من الكود أو إن صاحبه لسه جوه.';Sfx.thud();await ON.leave(true);return}
   ON.render();
@@ -2630,7 +2715,7 @@ ON.lobbyUI=first=>{
   const vb=$('#volBtn');vb.hidden=!!st.gf||ON.host;vb.classList.toggle('on',ON.vol);vb.textContent=ON.vol?'نزّل إيدك':'أنا عايز أبقى الجد فاذر';
   $$('#speedSeg button,#placeSeg button').forEach(b=>{b.disabled=!ON.host});
   $('#speedSeg').style.opacity=$('#placeSeg').style.opacity=ON.host?'':'.6';
-  placeUI();speedUI();$('#micBtn').hidden=!(VO.can()&&!isRoom());VO.apply();VO.decorate();
+  placeUI();speedUI();$('#micBtn').hidden=$('#audBtn').hidden=!(VO.can()&&!isRoom());VO.apply();VO.decorate();
   $('#placeNote').textContent=isRoom()?'قاعدين جنب بعض: اتكلموا وش لوش، والموبايل للأدوار والهنتات والتصويت.':(VO.can()?'أونلاين: دوس زرار المايك تحت عشان تشغّل الفويس. اللعبة بتفتح المايك للي عليه الدور بس.':'أونلاين: شغّلوا مكالمة صوت (واتساب أو ديسكورد) جنب اللعبة، واللعبة بتنظّم مين يتكلم إمتى.');
   const sb=$('#startBtn');gsap.killTweensOf(sb);gsap.set(sb,{scale:1});
   const pulse=()=>gsap.fromTo(sb,{scale:1},{scale:1.04,duration:.6,yoyo:true,repeat:-1,ease:'sine.inOut'});
