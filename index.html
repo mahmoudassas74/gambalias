@@ -156,7 +156,14 @@ img.medal{object-fit:contain;display:block}
 .vmic{position:absolute;left:14px;bottom:92px;z-index:46;width:64px;height:64px;border-radius:50%;border:3px solid #000;background:var(--teal);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;box-shadow:0 5px 0 #000;cursor:pointer;padding:0}
 .vmic[hidden]{display:none}
 .vaud{position:absolute;left:24px;bottom:166px;z-index:46;width:44px;height:44px;border-radius:50%;border:3px solid #000;background:var(--ink3);color:var(--paper);display:grid;place-items:center;box-shadow:0 4px 0 #000;cursor:pointer;padding:0}
-.vaud[hidden]{display:none}.vaud svg{width:20px;height:20px}
+.vaud[hidden]{display:none}
+.leavebtn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;font-size:14px}
+.leavebtn svg{width:18px;height:18px}
+.leavebtn.host{background:var(--red);color:#fff}
+.hud-leave{width:38px;height:38px;border-radius:10px;box-shadow:0 3px 0 #000}
+.hud-leave svg{width:18px;height:18px}
+.hud-leave.host{background:var(--red);color:#fff}
+.cf-card h2{font-family:var(--f-body);font-weight:800;font-size:28px}.vaud svg{width:20px;height:20px}
 .audbtn{width:54px;height:54px;border-radius:50%}
 .aud-card{max-width:430px;align-items:stretch;text-align:right;gap:8px}
 .aud-card h2{text-align:center;font-size:30px;font-family:var(--f-body);font-weight:800}
@@ -204,7 +211,9 @@ img.medal{object-fit:contain;display:block}
 .seat.dead .av{filter:grayscale(1) brightness(.45)}
 .seat.dead .tag{text-decoration:line-through;background:var(--ink3);color:var(--muted)}
 .seat .x{position:absolute;top:0;left:50%;transform:translateX(-50%);pointer-events:none}
-.seat.pick .av{cursor:pointer}
+.seat.pick .av{cursor:pointer;animation:pickpulse 1.1s ease-in-out infinite}
+@keyframes pickpulse{0%,100%{box-shadow:0 0 0 3px var(--paper),0 4px 0 #000}50%{box-shadow:0 0 0 7px var(--mustard),0 4px 0 #000}}
+.pick-hint{font-weight:800;font-size:15px;line-height:1.6}
 .seat.pick:not(.dead) .av:hover{box-shadow:0 0 0 4px var(--paper),0 4px 0 #000}
 .mark{position:absolute;left:50%;top:calc(clamp(50px,15vw,64px) / 2);width:96px;height:96px;transform:translate(-50%,-50%);pointer-events:none;z-index:4}
 .minicard{position:absolute;width:34px;height:48px;border:2px solid #000;border-radius:5px;background-color:var(--red);z-index:3;box-shadow:2px 3px 0 #000;
@@ -895,6 +904,7 @@ img.medal{object-fit:contain;display:block}
     <div class="ticket-row">
       <div class="ticket"><div><small>كود الروم</small><b dir="ltr" id="roomCode">JK72</b></div><button class="iconbtn" type="button" id="copyCode" aria-label="انسخ الكود"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg></button></div>
       <div class="count"><b id="joinCount">١/٧</b><small>في الروم</small></div>
+      <button class="chip leavebtn" type="button" id="leaveBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4"/><path d="M6 12h10"/></svg><span>اخرج</span></button>
     </div>
     <div class="lobby-body">
     <div class="lobby-main">
@@ -1067,6 +1077,7 @@ img.medal{object-fit:contain;display:block}
     <ol class="hud-steps" id="hudSteps"><li data-p="hint">الهنت</li><li data-p="talk">الأسئلة</li><li data-p="disc">النقاش</li><li data-p="vote">التصويت</li><li data-p="night">الليل</li></ol>
     <div class="hud-alive" id="hudAlive"></div>
     <button class="hud-me" id="hudMe" type="button" aria-label="شوف دورك"></button>
+    <button class="iconbtn hud-leave" id="hudLeave" type="button" aria-label="اخرج من الروم" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4"/><path d="M6 12h10"/></svg></button>
   </div>
   <div class="modal" id="peek" hidden><div class="peek-card"><div id="peekCard"></div><p class="ov-s" id="peekTxt"></p><button class="btn" type="button" id="peekClose">خبّي</button></div></div>
   <div class="modal" id="nightIntro" hidden>
@@ -1090,6 +1101,21 @@ img.medal{object-fit:contain;display:block}
   <div id="netBanner" role="status" hidden></div>
   <button class="vmic off" type="button" id="vmic" aria-label="الفويس" hidden></button>
   <button class="vaud" type="button" id="vaud" aria-label="اختار المايك والسماعة" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="7" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="7" rx="1.5"/></svg></button>
+  <div class="modal" id="confirmM" hidden>
+    <div class="paper intro-card cf-card">
+      <h2 class="display" id="cfT"></h2>
+      <p id="cfP"></p>
+      <button class="btn red block" type="button" id="cfYes"></button>
+      <button class="btn ghost block" type="button" id="cfNo">رجوع</button>
+    </div>
+  </div>
+  <div class="modal" id="closedM" hidden>
+    <div class="paper intro-card cf-card">
+      <h2 class="display">الروم اتقفل</h2>
+      <p id="closedP"></p>
+      <button class="btn block" type="button" id="closedOk">تمام</button>
+    </div>
+  </div>
   <div class="modal" id="audio" hidden>
     <div class="paper intro-card aud-card">
       <h2 class="display">المايك والسماعة</h2>
@@ -1927,7 +1953,7 @@ ENTER.talk=(s)=>{
   const seq=G.seq;setGhost(s);G.talkTok=(G.talkTok||0)+1;G.phase='pairs';
   $('#talkTimer').innerHTML=timerHTML();$('#talkHint').innerHTML=hintCardHTML();$('#talkPanel').innerHTML='';$('#talkWho').textContent='بنرتّب الدور…';
   $('#talkTitle').textContent='دور الأسئلة';hudStep('talk');renderLog();
-  try{$('#logBox').open=window.matchMedia('(min-width:980px)').matches}catch(e){}
+  $('#logBox').hidden=false;  try{$('#logBox').open=window.matchMedia('(min-width:980px)').matches}catch(e){}
   gsap.fromTo('#talkHint',{y:-20,opacity:0,rotation:3},{y:0,opacity:1,rotation:-1,duration:.5,ease:'back.out(2)'});
   const w=mountTable($('#talkHost'));
   gsap.fromTo($$('.seat',w),{scale:0},{scale:1,stagger:.05,duration:.4,ease:'back.out(2)'});
@@ -2367,12 +2393,26 @@ const MQ={client:null,conn:false,rooms:{},ready:null,chs:new Set(),
    ===================================================================== */
 const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,speak:{},micId:LS.get('jb-mic','')||'',outId:LS.get('jb-out','')||'',
   ice:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}],
+  /* phones on mobile data and most home routers can't reach each other directly,
+     so voice also goes through a public relay (Open Relay's shared-secret TURN) */
+  async relay(){
+    if(this.relayed&&Date.now()<this.relayed)return;
+    try{
+      if(window.JB_TURN){this.ice=[...this.ice.filter(x=>!x._r),...window.JB_TURN.map(x=>({...x,_r:1}))];this.relayed=Date.now()+6*3600e3;return}
+      const user=(Math.floor(Date.now()/1000)+12*3600)+':jb'+ON.cid.slice(1,7);
+      const k=await crypto.subtle.importKey('raw',new TextEncoder().encode('openrelayprojectsecret'),{name:'HMAC',hash:'SHA-1'},false,['sign']);
+      const pass=b64(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(user)));
+      const h='staticauth.openrelay.metered.ca';
+      this.ice=[...this.ice.filter(x=>!x._r),{_r:1,urls:[`turn:${h}:80`,`turn:${h}:80?transport=tcp`,`turn:${h}:443`,`turns:${h}:443?transport=tcp`],username:user,credential:pass}];
+      this.relayed=Date.now()+6*3600e3;
+    }catch(e){console.warn('relay',e)}
+  },
   can:()=>!!(ON.nr&&ON.nr.sig&&navigator.mediaDevices&&window.RTCPeerConnection),
   async start(){
     if(this.stream)return true;
     try{this.stream=await navigator.mediaDevices.getUserMedia({audio:this.cons(this.micId,false)})}
     catch(e){toast('المايك مش شغال.. اسمح للمتصفح يستخدم المايك');return false}
-    this.muted=false;this.watch(ON.cid,this.stream);if(ON.nr)ON.nr.presence({vc:1}).catch(()=>{});
+    await this.relay();this.muted=false;this.watch(ON.cid,this.stream);if(ON.nr)ON.nr.presence({vc:1}).catch(()=>{});
     this.sync(ON.peers||[]);this.apply();return true;
   },
   stop(){Object.keys(this.pcs).forEach(c=>this.close(c));this.unwatch(ON.cid);if(this.stream)this.stream.getTracks().forEach(t=>t.stop());this.stream=null;if(ON.nr)ON.nr.presence({vc:null}).catch(()=>{});this.apply()},
@@ -2385,7 +2425,7 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,sp
     this.decorate();
   },
   pc(c){
-    const pc=new RTCPeerConnection({iceServers:this.ice});pc._q=[];this.pcs[c]=pc;this.st[c]='new';
+    const pc=new RTCPeerConnection({iceServers:this.ice.map(({_r,...x})=>x)});pc._q=[];this.pcs[c]=pc;this.st[c]='new';
     this.stream.getTracks().forEach(t=>pc.addTrack(t,this.stream));
     pc.onicecandidate=e=>{if(e.candidate)ON.nr.sig.send(c,{t:'ice',c:e.candidate.toJSON()})};
     pc.ontrack=e=>{let a=this.auds[c];if(!a){a=document.createElement('audio');a.autoplay=true;a.playsInline=true;document.body.appendChild(a);this.auds[c]=a;if(this.outId&&a.setSinkId)a.setSinkId(this.outId).catch(()=>{})}a.srcObject=e.streams[0];a.play().catch(()=>{});this.watch(c,e.streams[0]);this.apply()};
@@ -2510,6 +2550,9 @@ ON.inGame=()=>!!(ON.st&&ON.st.ph!=='lobby'&&(ON.st.gf===ON.cid||ON.st.pl.some(e=
   try{if(window.claude&&typeof window.claude.use==='function')ON.room=await window.claude.use('room')}catch(e){ON.room=null}
   ON.via=ON.room?'claude':'web';if(!ON.room){ON.room=MQ;setTimeout(()=>MQ.init(),400)}
   ON.ready=true;titleOnline();
+  /* a refresh puts you straight back in your room (the owner too, before the room times out) */
+  const last=SS.get('jb-last',null);
+  if(last&&last.code&&Date.now()-last.t<3*3600e3)setTimeout(()=>{if(!G.online&&!G.demo)ON.resume()},600);
 })();
 function noRoomMsg(){
   const m=$('#offline');m.hidden=false;
@@ -2589,6 +2632,7 @@ ON.onPeers=peers=>{
   if(!hp)return;
   ON.hostSeen=Date.now();ON.netUI();
   const st=hp.presence.st;if(!st||typeof st!=='object'||!Array.isArray(st.pl))return;
+  if(st.cl){ON.kicked('صاحب الروم قفل الروم.');return}
   if(ON.st&&st.e===ON.st.e&&ON.st.code===st.code)return;
   ON.off=Date.now()-(+st.now||Date.now());
   ON.hostPk=hp.presence.pk||'';
@@ -2608,10 +2652,58 @@ ON.netUI=()=>{
   const nb=$('#netBanner');if(!G.online){nb.hidden=true;return}
   let t='';
   if(ON.connected===false)t='النت فصل.. بنحاول نرجع';
-  else if(!ON.host&&ON.st&&Date.now()-ON.hostSeen>9000)t='صاحب الروم مش موجود دلوقتي.. استنوه يرجع';
+  else if(!ON.host&&ON.st&&ON.hostGone&&Date.now()-ON.hostGone>4000)t='صاحب الروم فصل.. لو مارجعش في ثواني الروم هيتقفل';
   nb.textContent=t;nb.hidden=!t;
 };
 setInterval(()=>{if(G.online)ON.netUI()},2000);
+
+/* ---------- closing the room ---------- */
+function goWhenFree(name){if(busy){setTimeout(()=>goWhenFree(name),200);return}go(name)}
+ON.showClosed=msg=>{const m=$('#closedM');$('#closedP').textContent=msg;m.hidden=false;
+  gsap.fromTo('#closedM .intro-card',{scale:.4,opacity:0,rotation:-8},{scale:1,opacity:1,rotation:-1,duration:.5,ease:'back.out(1.8)'})};
+$('#closedOk').onclick=()=>{Sfx.click();$('#closedM').hidden=true};
+ON.toTitle=async()=>{['#audio','#confirmM','#nightIntro','#peek','#intro','#howto'].forEach(sel=>{const m=$(sel);if(m)m.hidden=true});
+  try{stopEndFx()}catch(e){}goWhenFree('title');setTimeout(titleOnline,900)};
+/* the owner closes it: everyone inside gets sent home */
+ON.closeRoom=async()=>{
+  if(!ON.host||!H.st)return;
+  ON.kicking=true;H.st.cl=1;H.changed();await wait(900);
+  clearInterval(H.tm);await ON.leave(true);H.st=null;ON.kicking=false;
+  await ON.toTitle();toast('الروم اتقفل عند الكل');
+};
+/* someone else closed it, or the owner is gone */
+ON.kicked=async msg=>{
+  if(ON.kicking)return;ON.kicking=true;
+  await ON.leave(true);await ON.toTitle();
+  setTimeout(()=>ON.showClosed(msg),700);ON.kicking=false;
+};
+ON.hostGone=0;
+setInterval(()=>{
+  if(!G.online||ON.host||!ON.st||ON.kicking)return;
+  if(ON.connected===false){ON.hostGone=0;return}
+  const here=(ON.peers||[]).some(p=>p.presence&&p.presence.host===1&&p.presence.code===ON.code);
+  if(here){ON.hostGone=0;return}
+  if(!ON.hostGone)ON.hostGone=Date.now();
+  if(Date.now()-ON.hostGone>25000)ON.kicked('صاحب الروم خرج من الروم، فاتقفل عند الكل. لو عايزين تكمّلوا، حد يعمل روم جديد.');
+},1000);
+ON.askLeave=()=>{
+  Sfx.click();const m=$('#confirmM'),host=ON.host;
+  $('#cfT').textContent=host?'تقفل الروم؟':'تخرج من الروم؟';
+  $('#cfP').textContent=host?'إنت صاحب الروم. لو قفلته، هيتقفل عند الكل واللعبة هتخلص.':(ON.inGame()&&ON.st.ph!=='end'?'هتطلع من القعدة. لو رجعت بالكود والقعدة لسه شغالة، هترجع مكانك.':'هتطلع من الروم وترجع للأول.');
+  $('#cfYes').textContent=host?'اقفل الروم':'اخرج';
+  m.hidden=false;gsap.fromTo('#confirmM .intro-card',{scale:.5,opacity:0},{scale:1,opacity:1,duration:.4,ease:'back.out(1.8)'});
+};
+$('#cfNo').onclick=()=>{Sfx.click();$('#confirmM').hidden=true};
+$('#cfYes').onclick=async()=>{Sfx.click();$('#confirmM').hidden=true;
+  if(ON.host)await ON.closeRoom();else{await ON.leave(true);await ON.toTitle()}};
+$('#leaveBtn').onclick=()=>ON.askLeave();
+$('#hudLeave').onclick=()=>ON.askLeave();
+ON.leaveUI=()=>{
+  const on=!!G.online,host=!!ON.host;
+  const lb=$('#leaveBtn');lb.hidden=!on;lb.classList.toggle('host',host);$('span',lb).textContent=host?'اقفل الروم':'اخرج';
+  const hl=$('#hudLeave');hl.hidden=!on;hl.classList.toggle('host',host);hl.setAttribute('aria-label',host?'اقفل الروم':'اخرج من الروم');
+};
+setInterval(()=>ON.leaveUI(),700);
 
 /* ---------- state -> the screens ---------- */
 ON.syncG=()=>{
@@ -2858,10 +2950,11 @@ OE.talk=s=>{
   OU.talk();
 };
 ON.qOpts=()=>{const hq=hintQA();return [...(hq?[hq.q]:[]),...shuffle(FREE_Q.slice()).slice(0,2),'__own']};
-ON.qText=q=>q==='__own'?(isRoom()?'بيسأل بصوته':'بيسأل في المكالمة'):q;
+ON.qText=q=>q==='__own'?'بيسأل دلوقتي…':q;
+ON.unpick=w=>$$('.seat',w).forEach(sx=>{sx.classList.remove('pick');const av=$('.av',sx);if(av)av.onclick=null});
 OU.talk=()=>{
   const st=ON.st,w=ON.talkW;if(!w)return;
-  renderLog();
+  $('#logBox').hidden=true;
   const sk=$('#talkSkip');sk.hidden=!G.gfHuman;
   if(st.ph==='talk'&&st.tk){
     const tk=st.tk;
@@ -2869,7 +2962,7 @@ OU.talk=()=>{
     $('#talkHint').innerHTML=hintCardHTML(`سؤال ${toAr(tk.k+1)} من ${toAr(tk.o.length)}`);
     ON.timerTo($('#talkTimer'),localDL(tk.d),SP().me);
     sk.textContent='كفاية أسئلة، يلا نتناقش';sk.classList.add('ghost');gsap.killTweensOf(sk);gsap.set(sk,{scale:1});
-    const key=[tk.k,tk.b,tk.q,tk.a].join('|');if(key===ON.tkKey)return;ON.tkKey=key;
+    const key=[tk.k,tk.b,tk.q,tk.a].join('|');if(key===ON.tkKey)return;ON.tkKey=key;ON.unpick(w);
     const ai=tk.o[tk.k],a=G.players[ai],bi=tk.b,b=bi>=0?G.players[bi]:null;if(!a)return;
     $$('.seat',w).forEach(sx=>{const i=+sx.dataset.i,on=i===ai||i===bi;sx.classList.toggle('dim',!on);sx.classList.toggle('talking',on)});
     const an=a.you?'إنت':a.name;
@@ -2880,28 +2973,22 @@ OU.talk=()=>{
       const bn=b.you?'إنت':b.name;
       if(!tk.q||ON.lastPair!==ai+'>'+bi){ribbon(a.you?`إنت بتسأل ${b.name}`:(b.you?`${a.name} بيسألك إنت`:`${a.name} بيسأل ${b.name}`));Sfx.whoosh()}
       ON.lastPair=ai+'>'+bi;
-      bubble(w,`<small>${an}:</small>${ON.qText(tk.q)}`+(tk.a?`<span class="bub-a"><small>${bn}:</small>${clean(tk.a,60)}</span>`:''));
-      setInfo(isRoom()?`الكل ساكت.. ${an} و${bn} بس اللي بيتكلموا`:`في المكالمة: ${an} و${bn} بس اللي بيتكلموا`);
+      bubble(w,`<small>${an} ← ${bn}</small>${ON.qText(tk.q)}`);
+      setInfo(isRoom()?`الكل ساكت.. ${an} و${bn} بس اللي بيتكلموا`:`المايك مفتوح لـ${an} و${bn} بس`);
     }else{
       $('.table-lines',w).innerHTML='';$$('.bubble',w).forEach(x=>x.remove());ON.lastPair=null;
-      ribbon(a.you?'دورك! هتسأل مين؟':`${a.name} بيختار هيسأل مين`);if(a.you)Sfx.ding();
-      setInfo(a.you?'اختار حد تسأله':'استنى..');
+      ribbon(a.you?'دورك! دوس على اللي هتسأله':`${a.name} بيختار هيسأل مين`);if(a.you)Sfx.ding();
+      setInfo(a.you?'':'استنى..');
     }
     /* what I can do now */
     if(a.you&&!b){
-      const others=G.players.filter(p=>p.alive&&!p.you);
-      act(`<p>اختار حد تسأله:</p><div class="row">${others.map(p=>`<button class="chip" type="button" data-i="${idx(p)}">${p.name}</button>`).join('')}</div>`);
-      $$('#talkAct .chip').forEach(c=>c.onclick=()=>{
-        Sfx.pop();const t=+c.dataset.i,bb=G.players[t],qs=ON.qOpts();
-        act(`<p>هتسأل ${bb.name} إيه؟</p><div class="row">${qs.map((q,i)=>`<button class="chip" type="button" data-q="${i}">${q==='__own'?'هسأله بصوتي':q}</button>`).join('')}</div>`);
-        $$('#talkAct .chip').forEach(c2=>c2.onclick=()=>{Sfx.pop();act('<p>…</p>');ON.send({t:'ask',b:t,q:qs[+c2.dataset.q]})});
-      });
+      act(`<p class="pick-hint">دوس على اللي عايز تسأله على الترابيزة، واسأله بصوتك.</p>`);
+      $$('.seat',w).forEach(sx=>{const i=+sx.dataset.i,p=G.players[i];if(!p||!p.alive||p.you)return;sx.classList.add('pick');sx.classList.remove('dim');const av=$('.av',sx);av.tabIndex=0;
+        av.onclick=()=>{ON.unpick(w);Sfx.pop();gsap.fromTo(av,{scale:1.25},{scale:1,duration:.4,ease:'back.out(3)'});act('<p>…</p>');ON.send({t:'ask',b:i,q:'__own'})}});
     }else if(a.you&&b){
       act(`<div class="row"><button class="chip" type="button" id="iDone">خلصت سؤالي</button></div>`);$('#iDone').onclick=()=>{Sfx.click();$('#iDone').disabled=true;ON.send({t:'next'})};
-    }else if(b&&b.you&&tk.q&&!tk.a){
-      const hintQ=tk.q.startsWith('«'),opts=hintQ?['آه، ده أنا','لأ، مش أنا خالص']:['أيوه','لأ','مش هقولك'];
-      act(`<p>جاوب ${a.name} (وممكن تكدب):</p><div class="row">${opts.map((o,i)=>`<button class="chip" type="button" data-o="${i}">${o}</button>`).join('')}<button class="chip" type="button" data-o="v">جاوبت بصوتي</button></div>`);
-      $$('#talkAct .chip').forEach(c=>c.onclick=()=>{Sfx.pop();const o=c.dataset.o;act('<p>…</p>');ON.send({t:'ans',a:o==='v'?'جاوب بصوته':opts[+o]})});
+    }else if(b&&b.you){
+      act(`<p class="pick-hint">${a.name} بيسألك.. جاوبه بصوتك.</p>`);
     }else if(G.gfHuman){
       act(`<div class="row"><button class="chip" type="button" id="gfNext">الدور اللي بعده</button></div>`);$('#gfNext').onclick=()=>{Sfx.click();ON.send({t:'next'})};
     }else act('');
@@ -2929,7 +3016,7 @@ OE.vote=s=>{
   const outI=st.vr?st.vr.o:-1;
   const list=G.players.filter((p,i)=>p.alive||i===outI);
   const L=$('#lineup');
-  L.innerHTML=list.map(p=>`<button class="suspect" type="button" data-i="${idx(p)}"${p.you?' disabled':''}><span class="vc">٠</span>${MARKER}<span class="av">${avatarSVG(p)}</span><span class="plate">${p.you?'إنت':p.name}</span><span class="sclaims">${claimsOf(p)?'قال: '+claimsOf(p):'لسه ماجاوبش'}</span></button>`).join('');
+  L.innerHTML=list.map(p=>`<button class="suspect" type="button" data-i="${idx(p)}"${p.you?' disabled':''}><span class="vc">٠</span>${MARKER}<span class="av">${avatarSVG(p)}</span><span class="plate">${p.you?'إنت':p.name}</span></button>`).join('');
   $$('.suspect',L).forEach(c=>c.onclick=()=>{
     if(ON.st.ph!=='vote'||!meAlive()||c.disabled||ON.voted())return;
     ON.myVote=+c.dataset.i;$$('.suspect',L).forEach(x=>x.classList.toggle('sel',x===c));$('#abstain').classList.remove('on');Sfx.pop();
@@ -3062,13 +3149,13 @@ OE.end=s=>{
   ENTER.end(s);
   const a=$('#endAgain'),h=$('#endHome');
   if(ON.host){a.disabled=false;a.textContent='العبوا تاني (نفس الروم)'}else{a.disabled=true;a.textContent='مستنيين صاحب الروم'}
-  h.textContent='اخرج من الروم';
+  h.textContent=ON.host?'اقفل الروم':'اخرج من الروم';
 };
 OU.end=()=>{};
 {
   const oa=$('#endAgain').onclick,oh=$('#endHome').onclick;
   $('#endAgain').onclick=e=>{if(!G.online)return oa(e);if(ON.host){stopEndFx();H.again()}};
-  $('#endHome').onclick=e=>{if(!G.online)return oh(e);stopEndFx();ON.leave(true).then(()=>{go('title');titleOnline()})};
+  $('#endHome').onclick=e=>{if(!G.online)return oh(e);if(ON.host){ON.closeRoom();return}stopEndFx();ON.leave(true).then(()=>{go('title');titleOnline()})};
 }
 
 /* =====================================================================
