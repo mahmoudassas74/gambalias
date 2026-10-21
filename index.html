@@ -160,6 +160,15 @@ img.medal{object-fit:contain;display:block}
 .vmic.off{background:var(--mustard);color:var(--ink)}
 .vmic.muted{background:var(--red)}
 .vmic.wait{background:var(--ink3);color:var(--muted)}
+.speaking .av{box-shadow:0 0 0 calc(3px + 5px*var(--lv,.5)) #3BD16F,0 0 calc(10px + 18px*var(--lv,.5)) rgba(59,209,111,.75),0 4px 0 #000!important;transition:box-shadow .08s}
+.speaking > .bars{display:flex!important}
+.speaking > .bars i{background:#3BD16F}
+.person .sbars{top:6px;left:6px;display:none}
+.person.speaking .sbars{display:flex}
+.person.speaking{border-color:#3BD16F;box-shadow:0 0 0 2px #3BD16F,0 4px 0 #000}
+.suspect .sbars,.suspect > .bars{top:4px;left:4px}
+.tcenter.speaking .portrait{filter:drop-shadow(0 0 calc(6px + 14px*var(--lv,.5)) #3BD16F)}
+.vmic.speaking{box-shadow:0 0 0 calc(3px + 6px*var(--lv,.5)) #3BD16F,0 5px 0 #000}
 .vdot{position:absolute;bottom:7px;left:7px;width:12px;height:12px;border-radius:50%;border:2px solid #000;background:#888}
 .vdot.ok{background:#3BD16F}.vdot.wait{background:var(--mustard)}.vdot.bad{background:var(--red)}.vdot.idle{background:#9FB0C0}
 
@@ -2310,18 +2319,18 @@ const MQ={
    VO: voice inside the game (browser rooms only). Everyone talks to
    everyone directly (WebRTC); the game decides whose mic is open.
    ===================================================================== */
-const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,
+const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,an:{},ac:null,speak:{},
   ice:[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'}],
   can:()=>!!(ON.nr&&ON.nr.sig&&navigator.mediaDevices&&window.RTCPeerConnection),
   async start(){
     if(this.stream)return true;
     try{this.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}})}
     catch(e){toast('المايك مش شغال.. اسمح للمتصفح يستخدم المايك');return false}
-    this.muted=false;if(ON.nr)ON.nr.presence({vc:1}).catch(()=>{});
+    this.muted=false;this.watch(ON.cid,this.stream);if(ON.nr)ON.nr.presence({vc:1}).catch(()=>{});
     this.sync(ON.peers||[]);this.apply();return true;
   },
-  stop(){Object.keys(this.pcs).forEach(c=>this.close(c));if(this.stream)this.stream.getTracks().forEach(t=>t.stop());this.stream=null;if(ON.nr)ON.nr.presence({vc:null}).catch(()=>{});this.apply()},
-  close(c){const pc=this.pcs[c];if(pc){try{pc.close()}catch(e){}}delete this.pcs[c];delete this.st[c];const a=this.auds[c];if(a){a.srcObject=null;a.remove()}delete this.auds[c]},
+  stop(){Object.keys(this.pcs).forEach(c=>this.close(c));this.unwatch(ON.cid);if(this.stream)this.stream.getTracks().forEach(t=>t.stop());this.stream=null;if(ON.nr)ON.nr.presence({vc:null}).catch(()=>{});this.apply()},
+  close(c){const pc=this.pcs[c];if(pc){try{pc.close()}catch(e){}}delete this.pcs[c];delete this.st[c];const a=this.auds[c];if(a){a.srcObject=null;a.remove()}delete this.auds[c];this.unwatch(c)},
   sync(peers){
     if(!this.stream||!this.can())return;
     const want=new Set();
@@ -2333,7 +2342,7 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,
     const pc=new RTCPeerConnection({iceServers:this.ice});pc._q=[];this.pcs[c]=pc;this.st[c]='new';
     this.stream.getTracks().forEach(t=>pc.addTrack(t,this.stream));
     pc.onicecandidate=e=>{if(e.candidate)ON.nr.sig.send(c,{t:'ice',c:e.candidate.toJSON()})};
-    pc.ontrack=e=>{let a=this.auds[c];if(!a){a=document.createElement('audio');a.autoplay=true;a.playsInline=true;document.body.appendChild(a);this.auds[c]=a}a.srcObject=e.streams[0];a.play().catch(()=>{});this.apply()};
+    pc.ontrack=e=>{let a=this.auds[c];if(!a){a=document.createElement('audio');a.autoplay=true;a.playsInline=true;document.body.appendChild(a);this.auds[c]=a}a.srcObject=e.streams[0];a.play().catch(()=>{});this.watch(c,e.streams[0]);this.apply()};
     pc.onconnectionstatechange=()=>{if(this.pcs[c]!==pc)return;this.st[c]=pc.connectionState;this.decorate();
       if(pc.connectionState==='failed'){this.close(c);const n=this.tries[c]=(this.tries[c]||0)+1;if(n<4&&ON.cid<c)setTimeout(()=>{if(this.stream&&!this.pcs[c])this.call(c)},2500*n)}};
     return pc;
@@ -2347,6 +2356,29 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,
       else if(m.t==='answer'&&m.d){const pc=this.pcs[c];if(pc&&pc.signalingState==='have-local-offer'){await pc.setRemoteDescription(m.d);pc._q.splice(0).forEach(x=>pc.addIceCandidate(x).catch(()=>{}))}}
       else if(m.t==='ice'&&m.c){const pc=this.pcs[c];if(!pc)return;if(pc.remoteDescription)await pc.addIceCandidate(m.c);else pc._q.push(m.c)}
     }catch(e){console.warn('sig',e)}
+  },
+  /* who is actually talking: measure the sound of each voice */
+  watch(c,stream){try{this.unwatch(c);if(!this.ac)this.ac=new (window.AudioContext||window.webkitAudioContext)();if(this.ac.state==='suspended')this.ac.resume();
+    const src=this.ac.createMediaStreamSource(stream),an=this.ac.createAnalyser();an.fftSize=512;src.connect(an);this.an[c]={src,an,buf:new Uint8Array(an.fftSize),hold:0,lv:0}}catch(e){}},
+  unwatch(c){const o=this.an[c];if(o){try{o.src.disconnect()}catch(e){}}delete this.an[c]},
+  meter(){
+    const now=Date.now(),sp={};
+    for(const c in this.an){const o=this.an[c];o.an.getByteTimeDomainData(o.buf);let s=0;for(let i=0;i<o.buf.length;i++){const v=(o.buf[i]-128)/128;s+=v*v}
+      const rms=Math.sqrt(s/o.buf.length);
+      const live=c===ON.cid?!!(this.stream&&this.stream.getAudioTracks().some(t=>t.enabled)):!(this.auds[c]&&this.auds[c].muted);
+      o.lv=o.lv*.5+Math.min(1,rms*7)*.5;
+      if(live&&rms>.03)o.hold=now+380;
+      if(now<o.hold)sp[c]=o.lv}
+    this.speak=sp;this.paint();
+  },
+  paint(){
+    const sp=this.speak,set=(el,c)=>{const on=!!c&&c in sp;if(el.classList.contains('speaking')!==on)el.classList.toggle('speaking',on);if(on)el.style.setProperty('--lv',sp[c].toFixed(2))};
+    $$('#people .person[data-c]').forEach(el=>{if(!$('.sbars',el))el.insertAdjacentHTML('beforeend','<span class="bars sbars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>');set(el,el.dataset.c)});
+    const cidAt=i=>{const p=G.players[+i];return p&&p.cid};
+    $$('.seat[data-i]').forEach(el=>set(el,cidAt(el.dataset.i)));
+    $$('.suspect[data-i]').forEach(el=>set(el,cidAt(el.dataset.i)));
+    $$('.tcenter').forEach(el=>set(el,ON.st&&ON.st.gf));
+    const vm=$('#vmic');if(vm)set(vm,ON.cid);
   },
   /* who may talk right now */
   allowed(cid){
@@ -2381,6 +2413,7 @@ const VO={stream:null,pcs:{},auds:{},st:{},tries:{},muted:false,
   }
 };
 setInterval(()=>{if(G.online)VO.apply()},400);
+setInterval(()=>{if(G.online&&Object.keys(VO.an).length)VO.meter();else if(Object.keys(VO.speak).length){VO.speak={};VO.paint()}},90);
 const ON={via:'',room:null,nr:null,code:'',host:false,st:null,sec:null,secRaw:null,acts:[],n:0,off:0,hostSeen:0,hostPk:'',vol:false,peers:[],ready:false,
   cid:SS.get('jb-cid',null)};
 if(!ON.cid||!/^c[a-z0-9]{6,12}$/.test(ON.cid)){ON.cid='c'+Math.random().toString(36).slice(2,10);SS.set('jb-cid',ON.cid)}
